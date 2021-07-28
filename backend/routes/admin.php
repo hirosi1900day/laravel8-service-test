@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admin\OwnerController;
 use App\Http\Controllers\Admin\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Admin\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Admin\Auth\EmailVerificationPromptController;
@@ -26,6 +27,17 @@ use App\Http\Controllers\Admin\Auth\VerifyEmailController;
 Route::get('/', function () {
     return view('admin.welcome');
 });
+
+Route::resource('owners', OwnerController::class)->middleware(['auth:admin']);
+
+Route::prefix('expired-owner')->middleware(['auth:admin'])->group(
+    function(){
+        Route::get('index', [OwnersController::class, 'expireOwnerIndex']);
+        Route::post('destroy/{owner}', [OwnersController::class, 'expiredOwnerdestroy']);
+    }
+);
+
+Route::get('expire_owners', [OwnerController::class, 'expire_owners']);
 
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
