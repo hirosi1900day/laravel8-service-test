@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Owner;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Throwable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class OwnerController extends Controller
 {
@@ -50,13 +54,30 @@ class OwnerController extends Controller
             'password' => ['required', 'confirmed'],
         ]);
 
-        $owner = Owner::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        try{
+            DB::transaction(function () use($request){
+                $owner = Owner::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+                Plan::create([
+                    'owner_id' => $owner->id,
+                    'name' => '店名を入力してください',
+                    'content' => '内容を入力してください',
+                    'is_selling' => true
+                ]);
 
-        return redirect()->route('admin.owners.index')->with(['message'=>'登録完了','staus'=>'info']);
+                return redirect()->route('admin.owners.index')->with(['message'=>'登録完了','staus'=>'info']);
+                });
+        }catch(Throwable $e){
+            Log::error($e);
+            throw $e;
+        }
+
+        
+       
+       
     }
 
     /**

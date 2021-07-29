@@ -9,6 +9,13 @@ class Plan extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'owner_id',
+        'name',
+        'content',
+        'is_selling'
+    ];
+
     public function owner() {
         return $this->belongsTo(Owner::class);
     }
