@@ -17,8 +17,8 @@
             <div class="h-full flex sm:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
               <div class="flex-grow sm:pl-8">
                 <h2 class="title-font font-medium text-lg text-gray-900">{{$owner->name}}</h2>
-                <form id="delete_{{$owner->id}}" method="post" action={{route('admin.owners.destroy',['owner'=>$owner->id])}}>
-                  @method('delete')
+                <form id="delete_{{$owner->id}}" method="post" action={{route('admin.expired-owner.destroy',['owner'=>$owner->id])}}>
+                  
                   @csrf
                   <button class="bg-red-300" data-id="{{$owner->id}}" onclick="deletePost(this)")>削除</button>
                 </form>

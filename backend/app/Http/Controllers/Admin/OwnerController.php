@@ -104,8 +104,13 @@ class OwnerController extends Controller
         $owner->delete();
         return redirect()->route('admin.owners.index')->with(['message'=>'削除完了', 'status'=>'error']);
     }
-    public function expire_owner(){
-        
+    public function expireOwnerIndex(){
+        $owners = Owner::onlyTrashed()->get();
+        return view('admin.expired-owners', ['owners' => $owners]);
     }
 
+    public function expiredOwnerdestroy($id) {
+        Owner::onlyTrashed()->findOrFail($id)->forceDelete();
+        return redirect()->route('admin.owners.index')->with(['message'=>'削除完了','status'=>'error']);
+    }
 }
